@@ -1,14 +1,33 @@
 import { useEffect, useState } from "react";
 import { 
   SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, StyleSheet, 
-  Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard
+  Dimensions, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, 
+  Modal
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Iconify } from 'react-native-iconify';
 
+// components
+import Verify from "../components/verify";
+import Setpassword from "../components/setpassword";
+
 const { width, height } = Dimensions.get('window')
 
 export default function Auth() {
+  const [verify, setVerify] = useState(false)
+  const [password, setPassword] = useState(true)
+
+  const theRegister = () => {
+    setVerify(false)
+    setPassword(true)
+  }
+  const theLogin = () => {
+    setVerify(true)
+  }
+  const theDone = () => {
+    setPassword(false)
+  }
+
   return (
     <LinearGradient
       colors={['#938EFF', '#7E9FFF', '#37C9FF']}
@@ -45,7 +64,7 @@ export default function Auth() {
                   </View>
                 </View>
 
-                <TouchableOpacity style={styles.authButton}>
+                <TouchableOpacity style={styles.authButton} onPress={() => theLogin()}>
                   <Text style={styles.authButtonHeader}>LOGIN</Text>
                 </TouchableOpacity>
               </View>
@@ -53,6 +72,23 @@ export default function Auth() {
           </View>
         </TouchableWithoutFeedback>
       </SafeAreaView>
+
+      {(verify || password) && (
+        <Modal animationType="slide">
+          {verify && (
+            <Verify 
+              phoneNumber="(000) 000-0000" 
+              register={() => theRegister()}
+            />
+          )}
+          {password && (
+            <Setpassword
+              cancel={() => setPassword(false)}
+              done={() => theDone()}
+            />
+          )}
+        </Modal>
+      )}
     </LinearGradient>
   )
 }
