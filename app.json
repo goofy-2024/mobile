@@ -20,6 +20,14 @@
     },
     "android": {
       "package": "com.geottuse.socialapp"
-    }
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/DeliusSwashCaps-Regular.ttf"]
+        }
+      ]
+    ]
   }
 }
