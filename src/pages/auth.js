@@ -6,6 +6,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Iconify } from 'react-native-iconify';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // components
 import Verify from "../components/verify";
@@ -13,9 +14,9 @@ import Setpassword from "../components/setpassword";
 
 const { width, height } = Dimensions.get('window')
 
-export default function Auth() {
+export default function Auth({ navigation }) {
   const [verify, setVerify] = useState(false)
-  const [password, setPassword] = useState(true)
+  const [password, setPassword] = useState(false)
 
   const theRegister = () => {
     setVerify(false)
@@ -24,8 +25,15 @@ export default function Auth() {
   const theLogin = () => {
     setVerify(true)
   }
-  const theDone = () => {
+  const theDone = async() => {
     setPassword(false)
+
+    await AsyncStorage.setItem("id", "1")
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'videos' }]
+    })
   }
 
   return (
