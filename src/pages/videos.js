@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get('window')
 
 export default function Videos({ navigation }) {
-  const [viewType, setViewtype] = useState('profile')
+  const [viewType, setViewtype] = useState('')
 
   const logout = async() => {
     setViewtype('')
@@ -42,23 +42,26 @@ export default function Videos({ navigation }) {
             <View style={styles.navsRow}>
               <TouchableOpacity style={styles.nav} onPress={() => setViewtype('home')}>
                 {viewType == 'home' ? 
-                  <Iconify icon="majesticons:home" size={35}/>
+                  <Iconify color="#0A71DF" icon="majesticons:home" size={35}/>
                   :
-                  <Iconify icon="majesticons:home-line" size={35}/>
+                  <Iconify color="#0A71DF" icon="majesticons:home-line" size={35}/>
                 }
               </TouchableOpacity>
               <TouchableOpacity style={styles.nav} onPress={() => setViewtype('search')}>
                 {viewType == 'search' ? 
-                  <Iconify icon="bxs:search" size={35}/>
+                  <Iconify color="#0A71DF" icon="bxs:search" size={35}/>
                   :
-                  <Iconify icon="bx:search" size={35}/>
+                  <Iconify color="#0A71DF" icon="bx:search" size={35}/>
                 }
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate("createpost")}>
+                <Text style={styles.createButtonHeader}>+</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.nav} onPress={() => setViewtype('profile')}>
                 {viewType == 'profile' ? 
-                  <Iconify icon="iconamoon:profile-circle-fill" size={35}/>
+                  <Iconify color="#0A71DF" icon="iconamoon:profile-circle-fill" size={35}/>
                   :
-                  <Iconify icon="iconamoon:profile-circle-light" size={35}/>
+                  <Iconify color="#0A71DF" icon="iconamoon:profile-circle-light" size={35}/>
                 }
               </TouchableOpacity>
             </View>
@@ -77,7 +80,11 @@ export default function Videos({ navigation }) {
                   </View>
 
                   <View style={styles.profileOptions}>
-                    <TouchableOpacity style={styles.profileOption}>
+                    <TouchableOpacity style={styles.profileOption} onPress={() => {
+                      setViewtype('')
+
+                      navigation.navigate("profile")
+                    }}>
                       <View style={styles.column}>
                         <Iconify icon="solar:pen-outline" size={20}/>
                       </View>
@@ -108,6 +115,8 @@ const styles = StyleSheet.create({
   navs: { flexDirection: 'row', height: '100%', justifyContent: 'space-around', width: '100%' },
   navsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   nav: { marginHorizontal: '5%', marginVertical: 5 },
+  createButton: { backgroundColor: 'white', borderRadius: 25, height: 47, marginTop: -10, padding: 3, width: 50 },
+  createButtonHeader: { color: '#0A71DF', fontSize: 30, textAlign: 'center' },
 
   // hidden
   modal: { backgroundColor: 'rgba(0, 0, 0, 0.7)', height: '100%', width: '100%' },
