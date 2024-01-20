@@ -54,7 +54,7 @@ export default function Videos({ navigation }) {
                   <Iconify color="#0A71DF" icon="bx:search" size={35}/>
                 }
               </TouchableOpacity>
-              <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate("createpost")}>
+              <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate("createvideo")}>
                 <Text style={styles.createButtonHeader}>+</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.nav} onPress={() => setViewtype('profile')}>
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   navs: { flexDirection: 'row', height: '100%', justifyContent: 'space-around', width: '100%' },
   navsRow: { flexDirection: 'row', justifyContent: 'space-around' },
   nav: { marginHorizontal: '5%', marginVertical: 5 },
-  createButton: { backgroundColor: 'white', borderRadius: 25, height: 47, marginTop: -10, padding: 3, width: 50 },
+  createButton: { alignItems: 'center', backgroundColor: 'white', borderRadius: 25, height: 47, marginTop: -10, padding: 3, width: 48 },
   createButtonHeader: { color: '#0A71DF', fontSize: 30, textAlign: 'center' },
 
   // hidden

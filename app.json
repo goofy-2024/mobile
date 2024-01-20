@@ -16,18 +16,41 @@
     ],
     "ios": {
       "bundleIdentifier": "com.geottuse.socialapp",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "$(PRODUCT_NAME) lets you record a funny video",
+        "NSMicrophoneUsageDescription": "$(PRODUCT_NAME) lets you record a video with audio"
+      }
     },
     "android": {
-      "package": "com.geottuse.socialapp"
+      "package": "com.geottuse.socialapp",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/DeliusSwashCaps-Regular.ttf"]
+          "fonts": [
+            "./assets/fonts/DeliusSwashCaps-Regular.ttf"
+          ]
+        }
+      ],
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) lets you record a funny video",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(PRODUCT_NAME) lets you record a video with audio"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "01fedc9a-dfda-4c64-9b09-344c8c3883e3"
+      }
+    }
   }
 }
