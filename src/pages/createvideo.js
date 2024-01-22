@@ -1,13 +1,59 @@
 import { useEffect, useState, useRef } from "react";
 import { SafeAreaView, View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
-import { Camera, useCameraDevice } from "react-native-vision-camera";
+import { Camera, useCameraDevices, useFrameProcessor } from "react-native-vision-camera";
 import { Iconify } from 'react-native-iconify';
+import Pie from 'react-native-pie'
 
 export default function Createvideo({ navigation }) {
+  const devices = useCameraDevices()
   const [permissions, setPermissions] = useState({ camera: false, audio: false })
   const [type, setType] = useState('back')
+  const [flashOn, setFlashon] = useState(false)
   const camera = useRef(null)
-  const device = useCameraDevice(type)
+  const device = useCameraDevice(device.front);
+  const [recordStatus, setRecordstatus] = useState(0)
+  const [firstStart, setFirststart] = useState(false)
+  const [recording, setRecording] = useState(false)
+  const timer = useRef(null)
+
+  const counter = () => {
+    setRecordstatus(prev => {
+      if (prev > 100) {
+        setRecording(false)
+        stopRecord()
+
+        return 100
+      } else {
+        return prev + 0.055
+      }
+    })
+  }
+
+  const startRecord = async() => {
+    setRecording(true)
+    setFirststart(true)
+
+    camera.current.startRecording({
+      onRecordingFinished: (video) => {
+        setRecording(false)
+        clearInterval(timer.current)
+      },
+      onRecordingError: (error) => console.error(error)
+    })
+    
+    timer.current = setInterval(() => counter(), 50)
+  }
+  const stopRecord = async() => {
+    setRecordstatus(0)
+
+    await camera.current.stopRecording()
+  }
+  const takePhoto = async() => {
+    alert("take photo")
+  }
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet'
+  }, [])
 
   useEffect(() => {
     const initialize = async() => {
@@ -42,12 +88,17 @@ export default function Createvideo({ navigation }) {
     initialize()
   }, [])
 
+  if (!device) return <View/>
+
   return (
     <Camera
       style={{ height: '100%', width: '100%' }}
       ref={camera}
-      device={device}
+      device={type == "front" ? device.front : device.back}
       isActive
+      video audio
+      // frameProcessor={frameProcessor}
+      // frameProcessorFps={5}
     >
       <SafeAreaView style={styles.box}>
         <View style={styles.createVideo}>
@@ -57,8 +108,12 @@ export default function Createvideo({ navigation }) {
             </TouchableOpacity>
 
             <View style={styles.topNavsRow}>
-              <TouchableOpacity style={styles.topNav} onPress={() => {}}>
-                <Iconify icon="mdi:flash" size={30}/>
+              <TouchableOpacity style={styles.topNav} onPress={() => setFlashon(!flashOn)}>
+                {flashOn ? 
+                  <Iconify icon="mdi:flash-outline" size={30}/>
+                  :
+                  <Iconify icon="mdi:flash" size={30}/>
+                }
               </TouchableOpacity>
               <TouchableOpacity style={styles.topNav} onPress={() => setType(type == 'front' ? 'back' : 'front')}>
                 <Iconify icon="eva:flip-2-outline" size={30}/>
@@ -66,9 +121,35 @@ export default function Createvideo({ navigation }) {
             </View>
           </View>
           <View style={styles.bottomNavs}>
-            <TouchableOpacity style={styles.bottomNav}>
-              <View style={styles.knob}/>
-            </TouchableOpacity>
+            {recording ? 
+              <TouchableOpacity 
+                style={styles.recordingTouch} 
+                onPress={() => {
+                  if (!firstStart) {
+                    stopRecord()
+                  }
+
+                  setFirststart(false)
+                }}
+              >
+                <Pie
+                  radius={40}
+                  sections={[
+                    { percentage: recordStatus, color: '#0A71DF' },
+                    { percentage: (100 - recordStatus), color: 'white' }
+                  ]}
+                />
+                <View style={styles.recordingKnob}/>
+              </TouchableOpacity>
+              :
+              <TouchableOpacity 
+                style={styles.recordTouch} 
+                onLongPress={() => startRecord()}
+                onPress={() => takePhoto()}
+              >
+                <View style={styles.recordKnob}/>
+              </TouchableOpacity>
+            }
           </View>
         </View>
       </SafeAreaView>
@@ -85,6 +166,8 @@ const styles = StyleSheet.create({
   topNav: { marginHorizontal: '5%' },
 
   bottomNavs: { alignItems: 'center', width: '100%' },
-  bottomNav: { alignItems: 'center', borderColor: 'white', borderRadius: 40, borderStyle: 'solid', borderWidth: 3, height: 80, justifyContent: 'center', width: 80 },
-  knob: { backgroundColor: 'white', borderRadius: 40, height: '95%', width: '95%' },
+  recordingTouch: { alignItems: 'center', borderColor: 'white', borderRadius: 40, borderStyle: 'solid', borderWidth: 3, height: 80, justifyContent: 'center', width: 80 },
+  recordingKnob: { backgroundColor: 'white', borderRadius: 40, height: 60, marginTop: 10, position: 'absolute', width: 60 },
+  recordTouch: { alignItems: 'center', borderColor: 'white', borderRadius: 40, borderStyle: 'solid', borderWidth: 8, height: 80, justifyContent: 'center', width: 80 },
+  recordKnob: { backgroundColor: 'white', borderRadius: 40, height: '95%', width: '95%' },
 })
