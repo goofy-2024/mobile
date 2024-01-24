@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { SafeAreaView, View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Camera, useCameraDevices, useFrameProcessor } from "react-native-vision-camera";
+import { scanFaces, Face } from 'vision-camera-face-detector';
 import { Iconify } from 'react-native-iconify';
 import Pie from 'react-native-pie'
 
@@ -10,7 +11,6 @@ export default function Createvideo({ navigation }) {
   const [type, setType] = useState('back')
   const [flashOn, setFlashon] = useState(false)
   const camera = useRef(null)
-  const device = useCameraDevice(device.front);
   const [recordStatus, setRecordstatus] = useState(0)
   const [firstStart, setFirststart] = useState(false)
   const [recording, setRecording] = useState(false)
@@ -88,13 +88,13 @@ export default function Createvideo({ navigation }) {
     initialize()
   }, [])
 
-  if (!device) return <View/>
+  if (!devices.front) return <View/>
 
   return (
     <Camera
       style={{ height: '100%', width: '100%' }}
       ref={camera}
-      device={type == "front" ? device.front : device.back}
+      device={type == "front" ? devices.front : devices.back}
       isActive
       video audio
       // frameProcessor={frameProcessor}
